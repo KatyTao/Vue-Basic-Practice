@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
   integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<style>
+  [v-cloak] {
+    display: none;
+  }
+</style>
 <div id="app">
   <div class="container">
-    <form class="mt-5">
+    <!-- alternative: v-show -->
+    <form v-if="!submitted" class="mt-5">
       <div class="form-group">
         <label for="email">Email</label>
         <!-- :value is short for v-bind:value -->
@@ -13,6 +19,7 @@
       </div>
       <button type="submit" v-on:click.prevent="prcess" class="btn btn-primary">Submit</button>
     </form>
+    <h2 v-else v-cloak class="mt-5">Thanks for signing up</h2>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -21,12 +28,11 @@
     el: '#app',
     data: {
       email: 'katy@example.com',
+      submitted: false
     },
     methods: {
       prcess: function () {
-        console.log(this);
-
-        alert('Submitted ' + this.email);
+        this.submitted = true;
       }
     }
   })
