@@ -5,7 +5,21 @@
 
 <div id="app">
   <div class="container">
-    <img :src="imgSrc" :title="imgTitle">
+    <div class="card mt-5">
+
+    </div>
+    <table class="table">
+      <thead class="thead-light">
+        <th>Name</th>
+        <th>Close Approach Date</th>
+      </thead>
+      <tbody v-cloak>
+        <tr v-for="a in asteroids">
+          <td>{{a.name}}</td>
+          <td>{{getCloseApproachDate(a)}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
@@ -13,25 +27,32 @@
 <!-- fetch api -->
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-  const apiKey = 'voIg6skzzuhbfI22UIKhx9O6URnUsXnrB9jW7SQc';
-  const url = 'https://api.nasa.gov/planetary/apod?api_key=' + apiKey;
+
   let vm = new Vue({
     el: '#app',
     data: {
-      imgSrc: '',
-      imgTitle: ''
+      asteroids: [],
+    },
+    created: function () {
+      this.fetchAsteriods();
     },
     methods: {
-      prcess: function () {
-        this.submitted = true;
+      fetchAsteriods: function () {
+        const apiKey = 'voIg6skzzuhbfI22UIKhx9O6URnUsXnrB9jW7SQc';
+        const url = 'https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=' + apiKey;
+        axios.get(url)
+          .then(function (res) {
+            vm.asteroids = res.data.near_earth_objects.slice(0, 10);
+          });
+      },
+      getCloseApproachDate: function (a) {
+        if (a.close_approach_data.length > 0) {
+          return a.close_approach_data[0].close_approach_date;
+        }
+        return 'N/A';
       }
     }
   })
 
-  axios.get(url)
-    .then(function (res) {
-      console.log(res);
-      vm.imgSrc = res.data.url;
-      vm.imgTitle = res.data.title;
-    });
+
 </script>
