@@ -2,7 +2,6 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
   integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-
 <div id="app">
   <div class="container">
     <div class="card mt-5">
@@ -10,13 +9,25 @@
     </div>
     <table class="table">
       <thead class="thead-light">
+        <th>#</th>
         <th>Name</th>
         <th>Close Approach Date</th>
+        <th>Miss Distance</th>
+        <th>Remove</th>
       </thead>
       <tbody v-cloak>
-        <tr v-for="a in asteroids">
+        <tr v-for="(a,index) in asteroids">
+          <td>{{index+1}}</td>
           <td>{{a.name}}</td>
           <td>{{getCloseApproachDate(a)}}</td>
+          <td>
+            <ul v-if="a.close_approach_data.length > 0">
+              <li v-for="(value, key, index) in a.close_approach_data[0].miss_distance">
+                {{key}}:{{value}}
+              </li>
+            </ul>
+          </td>
+          <td><button @click="remove(index)" class="btn btn-warning">remove</button></td>
         </tr>
       </tbody>
     </table>
@@ -50,6 +61,9 @@
           return a.close_approach_data[0].close_approach_date;
         }
         return 'N/A';
+      },
+      remove: function (index) {
+        this.asteroids.splice(index, 1);
       }
     }
   })
